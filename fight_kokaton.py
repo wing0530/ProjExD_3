@@ -204,7 +204,6 @@ def main():
     point = 0
     scores = Score(screen,point)
     beams = []
-    beam = None
     exp = []
     tmr = 0
     while True:
@@ -230,22 +229,22 @@ def main():
                 return
         
         # 爆弾破壊
-        if beam != None:
-            for j in range(len(beams)):
-                if beams[j] == None:
-                    continue
-                for i in range(len(bombs)):
-                    if bombs[i] != None and beam != None:
-                        if beams[j].rct.colliderect(bombs[i].rct):
-                                # beamとbomb衝突時
-                            exp.append(explosion(bombs[i])) #爆発表示
-                            beams[j] = None
-                            bombs[i] = None
-                            point += 1 #スコア追加
-                            bird.change_img(6, screen) #喜び
-                            break
-            bombs = [bomb for bomb in bombs if bomb is not None]
-            beams = [beam for beam in beams if beam is not None]
+       
+        for j in range(len(beams)):
+            if beams[j] == None:
+                continue
+            for i in range(len(bombs)):
+                if bombs[i] != None and beams[j] != None:
+                    if beams[j].rct.colliderect(bombs[i].rct):
+                            # beamとbomb衝突時
+                        exp.append(explosion(bombs[i])) #爆発表示
+                        beams[j] = None
+                        bombs[i] = None
+                        point += 1 #スコア追加
+                        bird.change_img(6, screen) #喜び
+                        break
+        bombs = [bomb for bomb in bombs if bomb is not None]
+        beams = [beam for beam in beams if beam is not None]
 
 
         # アプデ
