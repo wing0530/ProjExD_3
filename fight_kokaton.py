@@ -183,13 +183,13 @@ class explosion():
         self.rct = self.imgb.get_rect()
         self.rct.center = bomb.rct.center
         self.imgs = [self.imgb, self.imgf]
-        self.life = 5
+        self.life = 50
 
     def update(self, screen: pg.Surface):
         self.life -= 1
-        if self.life>=4 or self.life<=1:
+        if self.life%6>=3:
             screen.blit(self.imgs[0],self.rct)
-        if self.life<4 and self.life>1:
+        if self.life%6<3:
             screen.blit(self.imgs[1],self.rct)
 
 
