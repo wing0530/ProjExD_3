@@ -165,6 +165,29 @@ class Score:
         screen.blit(self.img,[100, HEIGHT-50])
 
 
+class explosion():
+    """
+    爆発エフェクトに関するクラス
+    """
+    def __init__(self, bomb:"Bomb"):
+        """
+        爆発gifの表示
+        """
+        self.imgb = pg.transform.rotozoom(pg.image.load("fig/explosion.gif"), 0, 1.0)
+        self.imgf = pg.transform.flip(self.imgb, True, True)  #反転
+        self.rct = self.imgb.get_rect()
+        self.rct.center = bomb.rct.center
+        self.imgs = [self.imgb, self.imgf]
+        self.life = 5
+
+    def update(self, screen: pg.Surface):
+        self.life -= 1
+        if self.life>=4 or self.life<=1:
+            screen.blit(self.imgs[0],self.rct)
+        if self.life<4 and self.life>1:
+            screen.blit(self.imgs[1],self.rct)
+
+
 def main():
     # 初期化
     pg.display.set_caption("たたかえ！こうかとん")
@@ -177,6 +200,7 @@ def main():
     scores = Score(screen,point)
     beams = []
     beam = None
+    exp = []
     tmr = 0
     while True:
         for event in pg.event.get():
@@ -209,9 +233,11 @@ def main():
                     if bombs[i] != None and beam != None:
                         if beams[j].rct.colliderect(bombs[i].rct):
                                 # beamとbomb衝突時
+                            exp.append(explosion(bombs[i]))
                             beams[j] = None
                             bombs[i] = None
                             point += 1
+                            bird.change_img(6, screen)
                             break
             bombs = [bomb for bomb in bombs if bomb is not None]
             beams = [beam for beam in beams if beam is not None]
@@ -226,6 +252,10 @@ def main():
                 beams.remove(beam)
         for bomb in bombs:
             bomb.update(screen)
+        for ex in exp:
+            if ex.life<0:
+                exp.remove(ex)
+            ex.update(screen)
         scores.update(point, screen)
         pg.display.update()
         tmr += 1
