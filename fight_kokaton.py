@@ -9,7 +9,7 @@ import pygame as pg
 WIDTH = 1100  # ゲームウィンドウの幅
 HEIGHT = 650  # ゲームウィンドウの高さ
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-NUM_OF_BOMBS = 5
+NUM_OF_BOMBS = 5 #爆弾数
 
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
@@ -57,7 +57,7 @@ class Bird:
         self.img = __class__.imgs[(+5, 0)]
         self.rct: pg.Rect = self.img.get_rect()
         self.rct.center = xy
-        self.dire = (+5, 0)
+        self.dire = (+5, 0) #向き
 
     def change_img(self, num: int, screen: pg.Surface):
         """
@@ -84,7 +84,7 @@ class Bird:
             self.rct.move_ip(-sum_mv[0], -sum_mv[1])
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self.img = __class__.imgs[tuple(sum_mv)]
-            self.dire = sum_mv
+            self.dire = sum_mv #向き記録
         screen.blit(self.img, self.rct)
 
 
@@ -238,11 +238,11 @@ def main():
                     if bombs[i] != None and beam != None:
                         if beams[j].rct.colliderect(bombs[i].rct):
                                 # beamとbomb衝突時
-                            exp.append(explosion(bombs[i]))
+                            exp.append(explosion(bombs[i])) #爆発表示
                             beams[j] = None
                             bombs[i] = None
-                            point += 1
-                            bird.change_img(6, screen)
+                            point += 1 #スコア追加
+                            bird.change_img(6, screen) #喜び
                             break
             bombs = [bomb for bomb in bombs if bomb is not None]
             beams = [beam for beam in beams if beam is not None]
@@ -251,12 +251,15 @@ def main():
         # アプデ
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
+        # ビーム
         for beam in beams:
             beam.update(screen)
             if check_bound(beam.rct) != (True, True):
                 beams.remove(beam)
+        # 爆弾
         for bomb in bombs:
             bomb.update(screen)
+        # 爆発
         for ex in exp:
             if ex.life<0:
                 exp.remove(ex)
